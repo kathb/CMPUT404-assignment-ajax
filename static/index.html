@@ -22,7 +22,7 @@
     "/>
     <script src="json2.js"></script>
   </head> 
-  <body bgcolor="black" height="100%" width="100%"> 
+  <body bgcolor="black" height="100%" width="100%">
     <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas> 
     <script>
 var canvas = document.getElementById('c');
@@ -37,10 +37,10 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState==4) {
             try {
-                if (xhr.status==200 && callbakc != null) {
+                if (xhr.status==200 && callback != null) {
                     //XXX: parse some JSON from the request!
                     var someJSON = JSON.parse(xhr.responseText);
-                    console.log(someJSON);
+            
                     //XXX: Pass the data to the callback!
                     callback(someJSON);
                 }
@@ -143,19 +143,12 @@ function getPosition(e) {
 
 
 function addEntity(entity, data) {
-    console.log("entity:");
-    console.log(entity);
     world[entity] = data;
-    console.log("data:");
-    console.log(data);
-    console.log("json?:");
-    console.log(JSON.stringify(data));
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
     //???
     var url = "http://"+host+"/entity/%s";
     url = url.replace('%s',entity);
-    console.log(url);
     sendJSONXMLHTTPRequest(url, JSON.stringify(data), null);
 }
 
