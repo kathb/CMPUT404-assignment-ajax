@@ -37,7 +37,7 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState==4) {
             try {
-                if (xhr.status==200) {
+                if (xhr.status==200 && callbakc != null) {
                     //XXX: parse some JSON from the request!
                     var someJSON = JSON.parse(xhr.responseText);
                     console.log(someJSON);
@@ -51,7 +51,7 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
         }
     };
     //XXX: POST to a URL
-    xhr.open("POST", url);
+    xhr.open("POST", url, true);
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
     xhr.setRequestHeader("Accept", "application/json");
@@ -156,7 +156,7 @@ function addEntity(entity, data) {
     var url = "http://"+host+"/entity/%s";
     url = url.replace('%s',entity);
     console.log(url);
-    sendJSONXMLHTTPRequest(url, JSON.stringify(data), drawFrame);
+    sendJSONXMLHTTPRequest(url, JSON.stringify(data), null);
 }
 
 var counter = 0;
@@ -285,13 +285,15 @@ function update() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             world = JSON.parse(xhr.responseText);
             //console.log("hi");
-            drawFrame();
+            drawNextFrame();
         }
     };
     var url = "http://"+host+"/world";
     //console.log(url);
     xhr.open("GET", url, true);
     xhr.send();
+
+    drawFrame();
 }
 
 // 30 frames per second
