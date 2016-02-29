@@ -12,4 +12,6 @@ Contributors / Licensing
 
 Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle and Kathleen Baker.
 
+I consulted with Brandon Smolley and Kieran Boyle.
+
 
