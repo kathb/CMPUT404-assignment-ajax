@@ -71,9 +71,10 @@ function drawCircle(context,entity) {
         var y = entity["y"];
         //moveTo(x,y);
         fillStyle = entity["colour"];
-        strokeStyle = fillStyle;
+        strokeStyle = "blue";
         arc(x, y, (entity["radius"])?entity["radius"]:20, 0, 2.0 * Math.PI, false);  
-        fill();                                
+        stroke();
+        fill();                               
     }
 }
 
@@ -264,11 +265,11 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'#ff99e6'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'#ff99e6', 'radius':10});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'#ff99e6'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'#ff99e6', 'radius':10});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
