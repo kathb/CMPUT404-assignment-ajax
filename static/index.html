@@ -40,6 +40,7 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
                 if (xhr.status==200) {
                     //XXX: parse some JSON from the request!
                     var someJSON = JSON.parse(xhr.responseText);
+                    console.log(someJSON);
                     //XXX: Pass the data to the callback!
                     callback(someJSON);
                 }
@@ -50,12 +51,12 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
         }
     };
     //XXX: POST to a URL
-    xhr.open("POST", url, true);
+    xhr.open("POST", url);
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-type", "application/json");
-    xhr.send();
+    xhr.send(objects);
 }
 
 
@@ -71,8 +72,8 @@ function drawCircle(context,entity) {
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        arc(x, y, (entity["radius"])?entity["radius"]:20, 0, 2.0 * Math.PI, false);  
+        fill();                                
     }
 }
 
@@ -81,7 +82,7 @@ function prepEntity(entity) {
         entity["colour"] = "#FF0000";
     }
     if (!entity["radius"]) {
-        entity["radius"] = 50;
+        entity["radius"] = 20;
     }
     return entity;
 }
@@ -141,11 +142,20 @@ function getPosition(e) {
 
 
 function addEntity(entity, data) {
+    console.log("entity:");
+    console.log(entity);
     world[entity] = data;
+    console.log("data:");
+    console.log(data);
+    console.log("json?:");
+    console.log(JSON.stringify(data));
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
     //???
-    sendJSONXMLHTTPRequest(url, entity, callback);
+    var url = "http://"+host+"/entity/%s";
+    url = url.replace('%s',entity);
+    console.log(url);
+    sendJSONXMLHTTPRequest(url, JSON.stringify(data), drawFrame);
 }
 
 var counter = 0;
@@ -254,15 +264,15 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'#ff99e6'});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'#ff99e6'});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
+    addEntityWithoutName({'x':x,'y':y,'colour':'#ff99e6',
                           'radius':10});
 });
 
@@ -272,14 +282,15 @@ function update() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            //document.getElementById("demo").innerHTML = xhr.responseText;
+            world = JSON.parse(xhr.responseText);
+            //console.log("hi");
+            drawFrame();
         }
     };
     var url = "http://"+host+"/world";
-    xhttp.open("GET", url, true);
-    xhttp.send();
-
-    drawFrame();
+    //console.log(url);
+    xhr.open("GET", url, true);
+    xhr.send();
 }
 
 // 30 frames per second
